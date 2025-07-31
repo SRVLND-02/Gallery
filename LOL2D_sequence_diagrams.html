@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOL2D - Sequence Diagrams</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .diagram-section {
+            padding: 40px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .diagram-section:last-child {
+            border-bottom: none;
+        }
+        
+        .diagram-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            display: inline-block;
+        }
+        
+        .diagram-description {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .mermaid {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .diagram-section {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 LOL2D - Sequence Diagrams</h1>
+            <p>Phân tích kiến trúc và luồng hoạt động của game</p>
+        </div>
+        
+        <div class="diagram-section">
+            <h2 class="diagram-title">🚀 Game Flow Sequence</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Luồng chính của game từ khi user truy cập đến khi bắt đầu chơi. 
+                Bao gồm các phase: Loading → Menu → Game, cùng với tương tác giữa các component chính.
+            </div>
+            <button class="download-btn" onclick="downloadDiagram('gameFlow')">📥 Tải PNG</button>
+            <button class="download-btn" onclick="downloadDiagram('gameFlow', 'svg')">📄 Tải SVG</button>
+            
+            <div class="mermaid" id="gameFlow">
+sequenceDiagram
+    participant User as 👤 User
+    participant Browser as 🌐 Browser  
+    participant HTML as 📄 index.html
+    participant Loading as ⏳ Loading Scene
+    participant Menu as 🎮 Menu Scene
+    participant Game as 🎯 Game Scene
+    participant P5 as 🎨 P5.js Engine
+    participant Vue as ⚡ Vue.js
+    participant Assets as 📁 Assets Manager
+
+    Note over User, Assets: Game Initialization Flow
+    
+    User->>Browser: Navigate to LOL2D URL
+    Browser->>HTML: Request index.html
+    HTML->>Browser: Load HTML structure
+    
+    Note over Browser: Load External Libraries
+    Browser->>P5: Load P5.js library
+    Browser->>Vue: Load Vue.js library
+    Browser->>HTML: Load CSS styles
+    
+    HTML->>Loading: Show loading scene
+    Loading->>User: Display logo & progress bar
+    
+    Note over Loading, Assets: Asset Loading Phase
+    Loading->>Assets: Initialize asset manager
+    Assets->>Assets: Load images, sounds, sprites
+    Assets->>Loading: Update progress
+    Loading->>User: Update progress bar
+    
+    Assets-->>Loading: All assets loaded
+    Loading->>Menu: Transition to menu scene
+    Menu->>User: Show game logo & play button
+    
+    Note over User, Game: Game Start Flow
+    User->>Menu: Click "Chơi" button
+    Menu->>Game: Initialize game scene
+    Game->>P5: Setup game canvas
+    Game->>Vue: Initialize HUD components
+    
+    P5->>Game: Canvas ready
+    Vue->>Game: HUD components ready
+    Game->>User: Show game interface
+    
+    Note over User, Game: Gameplay Loop
+    loop Game Running
+        User->>Game: Input (keyboard/mouse)
+        Game->>P5: Update game state
+        P5->>P5: Calculate physics & animations
+        P5->>Game: Render frame
+        Game->>Vue: Update HUD data
+        Vue->>User: Display updated UI
+    end
+    
+    Note over User, Menu: Exit Game
+    User->>Game: ESC or exit action
+    Game->>Menu: Return to menu scene
+    Menu->>User: Show menu again
+            </div>
+        </div>
+        
+        <div class="diagram-section">
+            <h2 class="diagram-title">⚙️ Component Interaction</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Tương tác chi tiết giữa các component trong game. 
+                Thể hiện cách Scene Manager, Game Engine, Champion System và HUD hoạt động cùng nhau.
+            </div>
+            <button class="download-btn" onclick="downloadDiagram('componentFlow')">📥 Tải PNG</button>
+            <button class="download-btn" onclick="downloadDiagram('componentFlow', 'svg')">📄 Tải SVG</button>
+            
+            <div class="mermaid" id="componentFlow">
+sequenceDiagram
+    participant App as 📱 App.js
+    participant SceneManager as 🎭 Scene Manager
+    participant GameEngine as 🔧 Game Engine
+    participant Champion as ⚔️ Champion System
+    participant Skills as ✨ Skills System
+    participant HUD as 📊 HUD Controller
+
+    Note over App, HUD: Component Initialization
+    
+    App->>SceneManager: Initialize scenes
+    SceneManager->>GameEngine: Setup game engine
+    GameEngine->>Champion: Load champion data
+    GameEngine->>Skills: Initialize skill system
+    GameEngine->>HUD: Setup HUD controller
+    
+    Note over SceneManager, HUD: Game Session Flow
+    
+    SceneManager->>GameEngine: Start game session
+    GameEngine->>Champion: Spawn player champion
+    Champion->>Skills: Load champion abilities
+    Skills->>HUD: Register skill icons
+    HUD->>App: UI ready signal
+    
+    Note over App, HUD: Gameplay Interactions
+    
+    loop Gameplay Loop
+        App->>GameEngine: Process input
+        GameEngine->>Champion: Update champion state
+        Champion->>Skills: Check skill cooldowns
+        Skills->>Champion: Apply skill effects
+        Champion->>HUD: Send stats update
+        HUD->>App: Render updated UI
+        GameEngine->>App: Render game frame
+    end
+    
+    Note over App, HUD: Error Handling
+    
+    alt Asset Loading Error
+        GameEngine-->>App: Loading failed
+        App->>SceneManager: Show error scene
+        SceneManager->>App: Display error message
+    end
+            </div>
+        </div>
+        
+        <div class="diagram-section">
+            <h2 class="diagram-title">📦 Asset Loading Pipeline</h2>
+            <div class="diagram-description">
+                <strong>Mô tả:</strong> Quá trình load các assets (hình ảnh, âm thanh) của game. 
+                Thể hiện parallel loading để tối ưu performance và cập nhật progress cho user.
+            </div>
+            <button class="download-btn" onclick="downloadDiagram('assetFlow')">📥 Tải PNG</button>
+            <button class="download-btn" onclick="downloadDiagram('assetFlow', 'svg')">📄 Tải SVG</button>
+            
+            <div class="mermaid" id="assetFlow">
+sequenceDiagram
+    participant Browser as 🌐 Browser
+    participant AssetLoader as 📦 Asset Loader
+    participant ImageCache as 🖼️ Image Cache
+    participant SoundCache as 🔊 Sound Cache
+    participant ProgressBar as 📊 Progress Bar
+
+    Note over Browser, ProgressBar: Asset Loading Pipeline
+    
+    Browser->>AssetLoader: Initialize asset loading
+    AssetLoader->>ProgressBar: Show 0% progress
+    
+    par Load Images
+        AssetLoader->>ImageCache: Load champion sprites
+        ImageCache->>AssetLoader: Champions loaded (25%)
+        AssetLoader->>ImageCache: Load skill icons
+        ImageCache->>AssetLoader: Skills loaded (50%)
+        AssetLoader->>ImageCache: Load UI elements
+        ImageCache->>AssetLoader: UI loaded (75%)
+    and Load Sounds
+        AssetLoader->>SoundCache: Load background music
+        AssetLoader->>SoundCache: Load sound effects
+        SoundCache->>AssetLoader: Audio loaded
+    end
+    
+    AssetLoader->>ProgressBar: Update to 100%
+    AssetLoader->>Browser: All assets ready
+    ProgressBar->>Browser: Hide loading screen
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>🎯 Phân tích LOL2D Project - Sequence Diagrams</p>
+            <p>Tạo bởi AI Assistant | Sử dụng Mermaid.js</p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            sequence: {
+                diagramMarginX: 50,
+                diagramMarginY: 10,
+                actorMargin: 50,
+                width: 150,
+                height: 65,
+                boxMargin: 10,
+                boxTextMargin: 5,
+                noteMargin: 10,
+                messageMargin: 35,
+                mirrorActors: false,
+                bottomMarginAdj: 1,
+                useMaxWidth: true,
+                rightAngles: false,
+                showSequenceNumbers: false
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+
+        // Function to download diagram as image
+        function downloadDiagram(diagramId, format = 'png') {
+            const element = document.getElementById(diagramId);
+            const svg = element.querySelector('svg');
+            
+            if (!svg) {
+                alert('Diagram chưa được render. Vui lòng đợi một chút!');
+                return;
+            }
+
+            if (format === 'svg') {
+                // Download as SVG
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                
+                const downloadLink = document.createElement('a');
+                downloadLink.href = svgUrl;
+                downloadLink.download = `LOL2D_${diagramId}.svg`;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                URL.revokeObjectURL(svgUrl);
+            } else {
+                // Download as PNG
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                // Get SVG dimensions
+                const svgRect = svg.getBoundingClientRect();
+                canvas.width = svgRect.width * 2; // High resolution
+                canvas.height = svgRect.height * 2;
+                
+                // White background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const url = URL.createObjectURL(svgBlob);
+                
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = url;
+                        downloadLink.download = `LOL2D_${diagramId}.png`;
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink);
+                        URL.revokeObjectURL(url);
+                    });
+                    
+                    URL.revokeObjectURL(url);
+                };
+                
+                img.src = url;
+            }
+        }
+
+        // Show loading message
+        setTimeout(() => {
+            console.log('🎨 Diagrams rendered successfully!');
+        }, 2000);
+    </script>
+</body>
+</html>
